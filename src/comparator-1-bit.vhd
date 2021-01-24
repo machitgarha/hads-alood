@@ -12,3 +12,10 @@ entity comparator_1_bit is
         lt, eq, gt: out std_logic
     );
 end entity;
+
+architecture structural of comparator_1_bit is
+begin
+    lt <= not left_operand and right_operand;
+    eq <= not (left_operand xor right_operand);
+    gt <= left_operand and not right_operand;
+end architecture;
