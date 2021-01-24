@@ -29,6 +29,10 @@ architecture structural of comparator_n_bit is
 
     -- A vector of '1's
     signal one_bits: std_logic_vector(n - 1 downto 0);
+
+    -- Signals used for saving results of smaller blocks of greater-than comparison
+    -- operation, consisting of many and and or gates.
+    signal gt_and_results, gt_or_results: std_logic_vector(n - 1 downto 0);
 begin
     l_one_on_one_bits_comparison:
     for i in 0 to n - 1 generate
@@ -51,5 +55,16 @@ begin
     end generate;
 
     eq <= '1' when eq_bits = one_bits else '0';
+
+    gt_or_results(0) <= gt_bits(0);
+
+    -- TODO: Document this?
+    l_initialize_gt_blocks:
+    for i in 0 to n - 2 generate
+        gt_and_results(i) <= gt_or_results(i) and eq_bits(i + 1);
+        gt_or_results(i + 1) <= gt_and_results(i) or gt_bits(i + 1);
+    end generate;
+
+    gt <= gt_or_results(n - 1);
 
 end architecture;
