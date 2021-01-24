@@ -29,7 +29,7 @@ begin
         gt => greater_than
     );
 
-    lhs_op <=
+    lhs_op <= x"00",
         x"2C" after 10 ns,
         x"09" after 20 ns,
         x"51" after 30 ns,
@@ -39,7 +39,7 @@ begin
         x"64" after 70 ns,
         x"00" after 80 ns;
 
-    rhs_op <=
+    rhs_op <= x"00",
         x"47" after 10 ns,
         x"C3" after 20 ns,
         x"90" after 30 ns,
