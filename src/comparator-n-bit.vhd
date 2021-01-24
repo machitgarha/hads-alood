@@ -20,11 +20,6 @@ architecture structural of comparator_n_bit is
     component comparator_1_bit is
         port(
             left_operand, right_operand: in std_logic;
-
-            -- Just like a decoder, exactly one of the followings will be 1.
-            -- lt: Lower-than
-            -- eq: Equals
-            -- gt: Greater-than
             lt, eq, gt: out std_logic
         );
     end component;
@@ -49,7 +44,7 @@ begin
 
     -- This could be merged with the previous generate loop, but it is here to keep
     -- things separated and clean. This should not affect performance in any way, as
-    -- generate is a compile-time operation.
+    -- generate is a analyze-time (i.e. compile-time) operation.
     l_initialize_one_bits:
     for i in 0 to n - 1 generate
         one_bits(i) <= '1';
