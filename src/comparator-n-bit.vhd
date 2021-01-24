@@ -29,9 +29,13 @@ architecture structural of comparator_n_bit is
         );
     end component;
 
+    -- Signals for keeping the results of bit-to-bit comparisons, using comparator_1_bit
     signal lt_bits, eq_bits, gt_bits: std_logic_vector(n - 1 downto 0);
+
+    -- A vector of '1's
+    signal one_bits: std_logic_vector(n - 1 downto 0);
 begin
-    l_compare_operand_bits:
+    l_one_on_one_bits_comparison:
     for i in 0 to n - 1 generate
         comparator_1_bit_i: comparator_1_bit port map(
             left_operand => left_operand(i),
@@ -42,5 +46,15 @@ begin
             gt => gt_bits(i)
         );
     end generate;
+
+    -- This could be merged with the previous generate loop, but it is here to keep
+    -- things separated and clean. This should not affect performance in any way, as
+    -- generate is a compile-time operation.
+    l_initialize_one_bits:
+    for i in 0 to n - 1 generate
+        one_bits(i) <= '1';
+    end generate;
+
+    eq <= '1' when eq_bits = one_bits else '0';
 
 end architecture;
