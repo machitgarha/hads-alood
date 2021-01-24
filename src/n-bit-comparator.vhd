@@ -17,3 +17,8 @@ entity n_bit_comparator is
         result: out std_logic_vector(1 downto 0)
     );
 end entity;
+
+architecture structural of n_bit_comparator is
+begin
+    
+end
