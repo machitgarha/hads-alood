@@ -12,7 +12,8 @@ architecture structural of latch_gated_d is
     -- As it is not possible to connect an output port to an internal gate, we need
     -- separated connectors holding q and q_not values, connecting them to both internals
     -- and actual output ports (i.e. q and q_not).
-    signal q_connector, q_not_connector: std_logic := '0';
+    signal q_connector: std_logic := '0';
+    signal q_not_connector: std_logic := '1';
 begin
     q_connector <= (d nand clock) nand q_not_connector;
     q_not_connector <= ((not d) nand clock) nand q_connector;
