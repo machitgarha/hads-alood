@@ -2,14 +2,14 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 -- Negative-edge-triggered D flip-flop
-entity flip_flop_neg_edge_d is
+entity flip_flop_d_negative_edge is
     port(
         d, clock: in std_logic;
         q, q_not: out std_logic
     );
 end entity;
 
-architecture structural_master_slave of flip_flop_neg_edge_d is
+architecture structural_master_slave of flip_flop_d_negative_edge is
     component latch_gated_d is
         port(
             d, clock: in std_logic;
