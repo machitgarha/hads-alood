@@ -1,14 +1,14 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity latch_gated_d is
+entity latch_d_gated is
     port(
         d, clock: in std_logic;
         q, q_not: out std_logic
     );
 end entity;
 
-architecture structural of latch_gated_d is
+architecture structural of latch_d_gated is
     -- As it is not possible to connect an output port to an internal gate, we need
     -- separated connectors holding q and q_not values, connecting them to both internals
     -- and actual output ports (i.e. q and q_not).

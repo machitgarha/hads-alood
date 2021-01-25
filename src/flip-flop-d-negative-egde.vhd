@@ -10,7 +10,7 @@ entity flip_flop_d_negative_edge is
 end entity;
 
 architecture structural_master_slave of flip_flop_d_negative_edge is
-    component latch_gated_d is
+    component latch_d_gated is
         port(
             d, clock: in std_logic;
             q, q_not: out std_logic
@@ -22,6 +22,6 @@ architecture structural_master_slave of flip_flop_d_negative_edge is
 begin
     clock_not <= not clock;
 
-    latch_master: latch_gated_d port map(d, clock, q_master, open);
-    latch_slave: latch_gated_d port map(q_master, clock_not, q, q_not);
+    latch_master: latch_d_gated port map(d, clock, q_master, open);
+    latch_slave: latch_d_gated port map(q_master, clock_not, q, q_not);
 end architecture;
