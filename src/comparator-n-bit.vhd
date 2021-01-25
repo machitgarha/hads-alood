@@ -32,7 +32,8 @@ architecture structural of comparator_n_bit is
 
     -- Signals used for saving results of smaller blocks of greater-than comparison
     -- operation, consisting of many and and or gates.
-    signal gt_and_results, gt_or_results: std_logic_vector(n - 1 downto 0);
+    signal gt_and_results: std_logic_vector(n - 2 downto 0);
+    signal gt_or_results: std_logic_vector(n - 1 downto 0);
 
     -- Temporary signals saving the eq and gt results, to be used in lower-than output.
     signal eq_tmp, gt_tmp: std_logic;
@@ -42,7 +43,6 @@ begin
         comparator_1_bit_i: comparator_1_bit port map(
             left_operand => left_operand(i),
             right_operand => right_operand(i),
-
             lt => lt_bits(i),
             eq => eq_bits(i),
             gt => gt_bits(i)
