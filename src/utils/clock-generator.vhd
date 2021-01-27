@@ -17,11 +17,16 @@ end entity;
 architecture structural of clock_generator is
     signal clock_tmp: std_logic := '0';
 begin
-    l_clock_generator:
-    for i in 1 to cycle_iterations generate
-        clock_tmp <= not clock_tmp after i * half_cycle_period;
-    end generate;
+    process is
+    begin
+        for i in 1 to cycle_iterations loop
+            clock_tmp <= '0';
+            wait for half_cycle_period;
+            clock_tmp <= '1';
+            wait for half_cycle_period;
+        end loop;
+        wait;
+    end process;
 
-    -- Everything is concurrent, so it can be outside of the generate loop above
     clock <= clock_tmp;
 end architecture;
