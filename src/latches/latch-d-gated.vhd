@@ -15,8 +15,8 @@ architecture structural of latch_d_gated is
     signal q_connector: std_logic := '0';
     signal q_not_connector: std_logic := '1';
 begin
-    q_connector <= (d nand clock) nand q_not_connector;
-    q_not_connector <= ((not d) nand clock) nand q_connector;
+    q_connector <= d when clock = '1';
+    q_not_connector <= not d when clock = '1';
 
     q <= q_connector;
     q_not <= q_not_connector;
