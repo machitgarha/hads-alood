@@ -27,6 +27,8 @@ begin
     uut: latch_d_gated port map(data, clock, q, q_not);
     clock_generator_instance: clock_generator generic map(10, 3 ns) port map(clock);
 
+    -- The data must remain stable when clock signal is changing. Thus, there is no signal
+    -- changes in data at 3n times (i.e. 3 ns, 6 ns, 9 ns, etc.).
     data <= '0',
         '1' after 4 ns,
         '0' after 11 ns,
