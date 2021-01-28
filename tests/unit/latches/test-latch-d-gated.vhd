@@ -14,8 +14,8 @@ architecture structural of test_latch_d_gated is
 
     component clock_generator is
         generic(
-            constant cycle_iterations: integer := 40;
-            constant half_cycle_period: time := 1 ns
+            constant cycle_iterations: integer := 0;
+            constant half_cycle_period: time := 10 ns
         );
         port(
             clock: out std_logic
