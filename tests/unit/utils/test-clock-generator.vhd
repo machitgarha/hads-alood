@@ -7,7 +7,7 @@ end entity;
 architecture structural of test_clock_generator is
     component clock_generator is
         generic(
-            constant cycle_iterations: integer := 40;
+            constant cycle_iterations: integer := 0;
             constant half_cycle_period: time := 1 ns
         );
         port(
