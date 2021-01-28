@@ -7,7 +7,7 @@ entity clock_generator is
         constant cycle_iterations: integer := 0;
 
         -- The period of half a cycle
-        constant half_cycle_period: time := 1 ns
+        constant half_cycle_period: time := 10 ns
     );
     port(
         clock: out std_logic
