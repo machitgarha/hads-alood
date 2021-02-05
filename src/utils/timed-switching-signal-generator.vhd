@@ -15,10 +15,10 @@ end entity;
 
 architecture behavioral of timed_switching_signal_generator is
 begin
-    result <= initial_value;
-
     process
     begin
+        result <= initial_value;
+
         for i in switch_timing'range loop
             if i = 0 then
                 wait for switch_timing(i);
@@ -27,6 +27,6 @@ begin
             end if;
             result <= not result;
         end loop;
+        wait;
     end process;
-
 end architecture;
