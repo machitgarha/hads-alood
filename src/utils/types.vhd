@@ -1,3 +1,3 @@
 package types is
-    type time_array is array(natural) of time;
+    type time_array is array(natural range <>) of time;
 end package;
