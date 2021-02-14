@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.types.time_array;
 
-entity timed_switching_signal_generator is
+entity switching_signal_generator is
     generic(
         -- The times in which the switch must be performed
         constant switch_timing: time_array
@@ -13,7 +13,7 @@ entity timed_switching_signal_generator is
     );
 end entity;
 
-architecture behavioral of timed_switching_signal_generator is
+architecture behavioral of switching_signal_generator is
 begin
     process
     begin

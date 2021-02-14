@@ -2,11 +2,11 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.types.time_array;
 
-entity test_timed_switching_signal_generator is
+entity test_switching_signal_generator is
 end entity;
 
-architecture structural of test_timed_switching_signal_generator is
-    component timed_switching_signal_generator is
+architecture structural of test_switching_signal_generator is
+    component switching_signal_generator is
         generic(
             constant switch_timing: time_array
         );
@@ -21,7 +21,7 @@ architecture structural of test_timed_switching_signal_generator is
 begin
     l_initial_value_generator:
     for i in initial_values'range generate
-        instance: timed_switching_signal_generator generic map(
+        instance: switching_signal_generator generic map(
             (7 ns, 9 ns, 16 ns, 22 ns, 28 ns, 31 ns, 41 ns, 52 ns, 56 ns, 62 ns, 64 ns,
             75 ns, 82 ns, 90 ns, 94 ns, 97 ns, 102 ns)
         ) port map (results(i), initial_values(i));
