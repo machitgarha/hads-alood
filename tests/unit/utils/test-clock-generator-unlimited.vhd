@@ -1,10 +1,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity test_clock_generator is
+entity test_clock_generator_unlimited is
 end entity;
 
-architecture structural of test_clock_generator is
+architecture structural of test_clock_generator_unlimited is
     component clock_generator is
         generic(
             constant cycle_iterations: integer := 0;
