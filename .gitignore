@@ -1,2 +1,8 @@
 # Executables
 build/
+
+# Runtime PHP libraries for scripts
+scripts/vendor
+
+# GHDL waveform files
+tests/unit/*/*.ghw

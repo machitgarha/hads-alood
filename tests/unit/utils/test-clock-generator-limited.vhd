@@ -1,14 +1,14 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity test_clock_generator is
+entity test_clock_generator_limited is
 end entity;
 
-architecture structural of test_clock_generator is
+architecture structural of test_clock_generator_limited is
     component clock_generator is
         generic(
             constant cycle_iterations: integer := 0;
-            constant half_cycle_period: time := 1 ns
+            constant half_cycle_period: time := 10 ns
         );
         port(
             clock: out std_logic
@@ -17,5 +17,5 @@ architecture structural of test_clock_generator is
 
     signal clock: std_logic;
 begin
-    uut: clock_generator port map(clock => clock);
+    instance: clock_generator generic map(10, 5 ns) port map(clock => clock);
 end architecture;
