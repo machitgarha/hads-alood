@@ -8,7 +8,7 @@ entity register_n_bit is
     port(
         data: in std_logic_vector(n - 1 downto 0);
         clock: in std_logic;
-        result: out std_logic_vector(n - 1 downto 0);
+        result: out std_logic_vector(n - 1 downto 0) := (others => '0');
 
         -- Resets the register to zero.
         reset: in std_logic := '0';
@@ -19,10 +19,9 @@ end entity;
 
 architecture behavioral of register_n_bit is
 begin
-    process
+    process(reset, enable, clock)
     begin
         if reset = '1' then
-            -- Make all bits zero
             result <= (others => '0');
         elsif enable = '1' and rising_edge(clock) then
             result <= data;
