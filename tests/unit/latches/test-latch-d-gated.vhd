@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use work.types.time_array;
 
 entity test_latch_d_gated is
 end entity;
@@ -22,25 +23,25 @@ architecture structural of test_latch_d_gated is
         );
     end component;
 
+    component switching_signal_generator is
+        generic(
+            constant switch_timing: time_array
+        );
+        port(
+            result: buffer std_logic;
+            initial_value: in std_logic := '0'
+        );
+    end component;
+
+    constant data_switch_timing: time_array := (
+        4 ns, 11 ns, 16 ns, 26 ns, 28 ns, 31 ns, 34 ns, 35 ns, 40 ns, 50 ns, 53 ns, 59 ns
+    );
+
     signal data, clock, q, q_not: std_logic;
 begin
-    uut: latch_d_gated port map(data, clock, q, q_not);
+    instance: latch_d_gated port map(data, clock, q, q_not);
+
     clock_generator_instance: clock_generator generic map(10, 3 ns) port map(clock);
-
-    -- The data must remain stable when clock signal is changing. Thus, there is no signal
-    -- changes in data at 3n times (i.e. 3 ns, 6 ns, 9 ns, etc.).
-    data <= '0',
-        '1' after 4 ns,
-        '0' after 11 ns,
-        '1' after 16 ns,
-        '0' after 26 ns,
-        '1' after 28 ns,
-        '0' after 31 ns,
-        '1' after 34 ns,
-        '0' after 35 ns,
-        '1' after 40 ns,
-        '0' after 50 ns,
-        '1' after 53 ns,
-        '0' after 59 ns;
-
+    data_generator_instance: switching_signal_generator generic map(data_switch_timing)
+        port map(data);
 end architecture;
