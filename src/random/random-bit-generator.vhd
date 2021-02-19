@@ -3,8 +3,11 @@ use ieee.std_logic_1164.all;
 
 entity random_bit_generator is
     generic(
+        -- The algorithm to be chosen.
         constant algorithm_seed: natural;
-        constant n: natural range 2 to 100 := 4
+
+        -- The size of the input seed.
+        constant n: natural range 2 to natural'high := 4
     );
     port(
         seed: in std_logic_vector(n - 1 downto 0);
