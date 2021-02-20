@@ -3,64 +3,71 @@ use ieee.std_logic_1164.all;
 
 entity random_bit_generator is
     generic(
-        -- The algorithm to be chosen.
-        constant algorithm_seed: natural;
-
         -- The size of the input seed.
-        constant n: natural range 2 to natural'high := 4
+        constant n: natural range 3 to natural'high := 5
     );
     port(
-        seed: in std_logic_vector(n - 1 downto 0);
         clock: in std_logic;
+        seed: in std_logic_vector(0 to n - 1);
         result: out std_logic := '0'
     );
 end entity;
 
 architecture structural of random_bit_generator is
-    constant max_algorithm_number: natural := 3;
-    constant algorithm_selector: natural := algorithm_seed mod max_algorithm_number;
+    type integer_array is array(natural range <>) of integer;
 
-    signal result_helpers: std_logic_vector(n - 1 downto -1) := (others => '0');
+    signal seed_tmp: std_logic_vector(0 to n - 1) := seed;
 begin
-    l_alorithm_1:
-    if algorithm_selector = 0 generate
-        result_helpers(-1) <= not clock;
+    process
+        -- The distance of the two must be at least 2 (i.e. the selector having at least
+        -- 3 elements).
+        constant selector_range_start: natural := 0;
+        constant selector_range_end_min: natural := 2;
+        constant selector_range_end_max: natural := 100;
+        variable selector_range_end: natural := selector_range_end_min;
 
-        l_algorithm_1_generator:
-        for i in 0 to n - 1 generate
-            result_helpers(i) <= result_helpers(i - 1) xor seed(i);
-        end generate;
-    end generate;
+        variable selector: integer_array(
+            selector_range_start to selector_range_end_max
+        );
 
-    l_algorithm_2:
-    if algorithm_selector = 1 generate
-        result_helpers(-1) <= clock;
+        variable selector_to_init: boolean := true;
+        constant selector_init_value: integer_array(
+            selector_range_start to selector_range_end
+        ) := (1, 1, 2);
 
-        l_algorithm_2_generator:
-        for i in 0 to n - 1 generate
-            l_algorithm_2_even_or_odd:
-            if i mod 2 = 0 generate
-                result_helpers(i) <= result_helpers(i - 1) nand seed(i);
-            elsif i mod 2 = 1 generate
-                result_helpers(i) <= result_helpers(i - 1) nor seed(i);
-            end generate;
-        end generate;
-    end generate;
+        variable count: natural := 0;
 
-    l_algorithm_3:
-    if algorithm_selector = 2 generate
-        l_algorithm_3_first_half_generator:
-        for i in 0 to n / 2 - 1 generate
-            result_helpers(i) <= seed(i) xor seed(n - 1 - i);
-        end generate;
+        variable result_next_state: std_logic := '0';
+    begin
+        -- Initialize selector
+        if selector_to_init then
+            selector(selector_range_start to selector_range_end) := selector_init_value;
+            selector_to_init := false;
+        end if;
 
-        l_algorithm_3_second_half_generator:
-        for i in n / 2 to n - 2 generate
-            result_helpers(i) <= result_helpers(i - n / 2) xor result_helpers(i - 1);
-        end generate;
+        -- Wait until clock reaches a stable state.
+        wait until clock'event;
+        wait for 10 ps;
 
-        result_helpers(n - 1) <= result_helpers(n - 2) xor clock;
-    end generate;
+        result_next_state := seed_tmp(selector(selector_range_end)) xor clock;
 
-    result <= result_helpers(n - 1);
+        result <= result_next_state;
+        seed_tmp(selector(selector_range_start)) <= result_next_state;
+
+        -- E.g. (a, b, c) -> (b, c, c)
+        -- E.g. (a, b, c, d) -> (b, c, d, d)
+        for i in selector_range_start to selector_range_end - 1 loop
+            selector(i) := selector(i + 1);
+        end loop;
+
+        -- E.g. (b, c, c) -> (b, c, b + c)
+        -- E.g. (b, c, d, d) -> (b, c, d, b + c + d)
+        for i in selector_range_start to selector_range_end - 2 loop
+            selector(selector_range_end) := selector(selector_range_end) +
+                selector(i);
+        end loop;
+
+        -- Making sure the selector(s) do(es) not exceed seed bound
+        selector(selector_range_end) := selector(selector_range_end) mod n;
+    end process;
 end architecture;
