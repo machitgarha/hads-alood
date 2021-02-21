@@ -1,19 +1,19 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity random_bit_generator is
+entity random_generator_1_bit is
     generic(
         -- The size of the input seed.
-        constant n: natural range 3 to natural'high := 5
+        constant seed_size: natural range 3 to natural'high := 5
     );
     port(
         clock: in std_logic;
-        seed: in std_logic_vector(0 to n - 1);
+        seed: in std_logic_vector(0 to seed_size - 1);
         result: out std_logic := '0'
     );
 end entity;
 
-architecture structural of random_bit_generator is
+architecture structural of random_generator_1_bit is
     type integer_array is array(natural range <>) of integer;
 
     -- The period to wait until clock reaches a stable state.
@@ -30,7 +30,7 @@ architecture structural of random_bit_generator is
         selector_range_start to selector_range_end_max
     ) := (1, 1, 2, others => 0);
 
-    signal seed_tmp: std_logic_vector(0 to n - 1) := seed;
+    signal seed_tmp: std_logic_vector(0 to seed_size - 1) := seed;
 begin
     process
     begin
@@ -69,12 +69,12 @@ begin
         end loop;
 
         -- This must be seed and not seed_tmp
-        if seed(count mod n) = '1' then
+        if seed(count mod seed_size) = '1' then
             selector(selector_range_end) := selector(selector_range_end) + 1;
         end if;
 
         -- Making sure the selector(s) do(es) not exceed seed bound
-        selector(selector_range_end) := selector(selector_range_end) mod n;
+        selector(selector_range_end) := selector(selector_range_end) mod seed_size;
 
         -- Count is an index to change the algorithm in the case of repetition.
         count := count + 1;
@@ -101,7 +101,7 @@ begin
                 selector(selector_range_end) := selector(selector_range_end) +
                     selector(i);
             end loop;
-            selector(selector_range_end) := selector(selector_range_end) mod n;
+            selector(selector_range_end) := selector(selector_range_end) mod seed_size;
 
             count := selector_range_end;
         end if;
