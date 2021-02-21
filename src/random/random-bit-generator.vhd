@@ -68,6 +68,7 @@ begin
                 selector(i);
         end loop;
 
+        -- This must be seed and not seed_tmp
         if seed(count mod n) = '1' then
             selector(selector_range_end) := selector(selector_range_end) + 1;
         end if;
@@ -91,6 +92,10 @@ begin
         -- to prevent this.
         if count >= count_limit then
             selector_range_end := selector_range_end + 1;
+
+            if selector_range_end > selector_range_end_max then
+                selector_range_end := selector_range_end_min;
+            end if;
 
             for i in selector_range_start to selector_range_end - 1 loop
                 selector(selector_range_end) := selector(selector_range_end) +
