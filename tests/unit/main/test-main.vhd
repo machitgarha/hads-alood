@@ -49,15 +49,12 @@ architecture structural of test_main is
     constant seed: std_logic_vector(0 to seed_size - 1) := "0011101";
 
     constant enter_button_states: time_array := (
-        253 ns, 255 ns, 285 ns, 313 ns, 347 ns, 433 ns, 463 ns, 491 ns,
-        546 ns, 609 ns, 676 ns, 745 ns, 804 ns, 871 ns, 923 ns, 1014 ns, 1015 ns, 1065 ns,
-        1147 ns, 1171 ns, 1210 ns, 1243 ns, 1289 ns, 1383 ns, 1384 ns, 1438 ns, 1488 ns,
-        1552 ns, 1568 ns, 1617 ns, 1709 ns, 1791 ns, 1800 ns, 1873 ns, 1917 ns, 2000 ns
+        923 ns, 940 ns, 1894 ns, 1907 ns, 2691 ns, 2718 ns, 2895 ns, 2922 ns, 3300 ns,
+        3304 ns, 3876 ns, 3901 ns, 4714 ns, 4757 ns, 5245 ns, 5271 ns, 5665 ns, 5705 ns,
+        5783 ns, 5792 ns, 6559 ns, 6567 ns, 7455 ns, 7475 ns, 7955 ns, 7956 ns, 8908 ns,
+        8950 ns, 9738 ns, 9743 ns, 9933 ns, 9945 ns
     );
-    constant reset_button_states: time_array := (
-        404 ns, 407 ns, 613 ns, 615 ns, 915 ns, 921 ns, 1347 ns, 1349 ns, 1464 ns,
-        1467 ns, 1864 ns, 1870 ns
-    );
+    constant reset_button_states: time_array := (10000 ns, 10001 ns);
 
     signal clock, enter_button, reset_button,
         led_correct, led_upper, led_less, led_lock: std_logic := '0';
@@ -77,7 +74,7 @@ begin
         result_7_segment
     );
 
-    clock_generator_instance: clock_generator generic map(100, 10 ns) port map(clock);
+    clock_generator_instance: clock_generator generic map(500, 10 ns) port map(clock);
 
     enter_button_generator_instance: switching_signal_generator
         generic map(enter_button_states) port map(enter_button);
@@ -85,21 +82,24 @@ begin
         generic map(reset_button_states) port map(reset_button);
 
     input_number <=
-        x"2" after 171 ns,
-        x"b" after 264 ns,
-        x"c" after 455 ns,
-        x"0" after 518 ns,
-        x"6" after 543 ns,
-        x"5" after 633 ns,
-        x"d" after 820 ns,
-        x"f" after 976 ns,
-        x"3" after 1161 ns,
-        x"8" after 1309 ns,
-        x"8" after 1324 ns,
-        x"2" after 1378 ns,
-        x"9" after 1520 ns,
-        x"e" after 1694 ns,
-        x"a" after 1881 ns,
-        x"5" after 1966 ns,
-        x"5" after 1989 ns;
+        x"1" after 230 ns,
+        x"7" after 734 ns,
+        x"c" after 1001 ns,
+        x"a" after 1807 ns,
+        x"d" after 1934 ns,
+        x"c" after 2281 ns,
+        x"d" after 2639 ns,
+        x"0" after 3357 ns,
+        x"e" after 4022 ns,
+        x"9" after 4347 ns,
+        x"1" after 4546 ns,
+        x"7" after 5498 ns,
+        x"7" after 5741 ns,
+        x"5" after 6276 ns,
+        x"2" after 7269 ns,
+        x"9" after 7424 ns,
+        x"b" after 7744 ns,
+        x"4" after 8590 ns,
+        x"8" after 9176 ns,
+        x"e" after 9787 ns;
 end architecture;
