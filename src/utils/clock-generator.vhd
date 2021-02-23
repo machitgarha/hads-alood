@@ -10,7 +10,7 @@ entity clock_generator is
         constant half_cycle_period: time := 10 ns
     );
     port(
-        clock: out std_logic
+        clock: out std_logic := '0'
     );
 end entity;
 
