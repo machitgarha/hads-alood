@@ -77,7 +77,8 @@ architecture structural of main is
     component led_controller is
         port(
             lt, eq, gt, locked: in std_logic;
-            led_correct, led_upper, led_less, led_lock: out std_logic
+            led_correct, led_upper, led_less, led_lock: out std_logic;
+            enable: in std_logic
         );
     end component;
 
@@ -88,12 +89,12 @@ architecture structural of main is
         );
     end component;
 
-    constant count_limit: std_logic_vector(2 downto 0) := o"7";
-
     signal enable_global, enable_prng: std_logic := '0';
 
-    signal reached_count_limit: std_logic := '0';
-    signal count: std_logic_vector(2 downto 0) := o"0";
+    constant guess_count_limit: std_logic_vector(2 downto 0) := o"7";
+    signal reached_guess_count_limit: std_logic := '0';
+    signal guess_count: std_logic_vector(2 downto 0) := o"0";
+    signal is_guessed: std_logic := '0';
 
     signal prng_done: std_logic;
     signal lt, eq, gt: std_logic;
@@ -101,7 +102,8 @@ architecture structural of main is
     signal cur_input_number: std_logic_vector(n - 1 downto 0);
     signal random_number, cur_random_number: std_logic_vector(n - 1 downto 0);
 begin
-    reached_count_limit <= '1' when count = count_limit else '0';
+    reached_guess_count_limit <= '1' when guess_count = guess_count_limit else '0';
+    is_guessed <= '0' when guess_count = o"0" else '1';
 
     random_generator: random_generator_n_bit generic map(
         n => n,
@@ -141,22 +143,23 @@ begin
         lt => lt,
         eq => eq,
         gt => gt,
-        locked => reached_count_limit,
+        locked => reached_guess_count_limit,
+        enable => is_guessed,
         led_correct => led_correct,
         led_upper => led_upper,
         led_less => led_less,
         led_lock => led_lock
     );
 
-    count_counter: counter_n_bit generic map(3) port map(
+    guess_count_counter: counter_n_bit generic map(3) port map(
         clock => clock,
-        result => count,
+        result => guess_count,
         enable => enable_global,
         clear => reset_button
     );
 
     binary_3_bit_to_7_segment_instance: binary_3_bit_to_7_segment port map(
-        data => count,
+        data => guess_count,
         result_7_segment => result_7_segment
     );
 
@@ -168,7 +171,7 @@ begin
             enable_global <= '0';
             enable_prng <= '0';
         else -- if rising_edge(enter_button)
-            if reached_count_limit = '0' then
+            if reached_guess_count_limit = '0' then
                 -- Make sure the random number is generated, but this should happen rarely
                 if prng_done = '0' then
                     wait until rising_edge(prng_done);
@@ -179,7 +182,10 @@ begin
 
                 enable_global <= '1';
 
-                if count = o"0" then
+                -- If enter button is activated, and it is the first guess of the user, it
+                -- means random number register is empty; so fill it with current value of
+                -- the PRNG output.
+                if is_guessed = '0' then
                     enable_prng <= '1';
                 end if;
 
