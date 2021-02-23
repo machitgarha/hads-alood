@@ -10,8 +10,8 @@ end entity;
 
 architecture structural of led_controller is
 begin
-    led_correct <= eq and enable;
-    led_upper <= gt and enable;
-    led_less <= lt and enable;
+    led_correct <= eq;
+    led_upper <= gt;
+    led_less <= lt;
     led_lock <= not enable;
 end architecture;
