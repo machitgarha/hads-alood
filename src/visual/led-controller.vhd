@@ -3,10 +3,12 @@ use ieee.std_logic_1164.all;
 
 entity led_controller is
     port(
+        lt, eq, gt, locked: in std_logic;
+        led_correct, led_upper, led_less, led_lock: out std_logic;
+
         -- Enable is used when we want to hide LED results, e.g. because of an unstable
         -- state, and turn all of them off.
-        lt, eq, gt, locked, enable: in std_logic;
-        led_correct, led_upper, led_less, led_lock: out std_logic
+        enable: in std_logic := '1'
     );
 end entity;
 
