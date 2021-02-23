@@ -170,7 +170,9 @@ begin
         else -- if rising_edge(enter_button)
             if reached_count_limit = '0' then
                 -- Make sure the random number is generated, but this should happen rarely
-                wait until prng_done = '1';
+                if prng_done = '0' then
+                    wait until rising_edge(prng_done);
+                end if;
 
                 wait until falling_edge(clock);
                 wait for 10 ps;
