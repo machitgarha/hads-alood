@@ -18,7 +18,7 @@ entity main is
         prng_seed: in std_logic_vector(0 to prng_seed_size - 1);
 
         led_correct, led_upper, led_less, led_lock: out std_logic;
-        result_7_segment: out std_logic
+        result_7_segment: out std_logic_vector(6 downto 0)
     );
 end entity;
 
@@ -87,5 +87,94 @@ architecture structural of main is
             result_7_segment: out std_logic_vector(6 downto 0)
         );
     end component;
+
+    constant count_limit: std_logic_vector(2 downto 0) := "111";
+
+    signal enable_global: std_logic := '0';
+
+    signal reached_count_limit: std_logic := '0';
+    signal count: std_logic_vector(2 downto 0) := "000";
+
+    signal prng_done: std_logic;
+    signal lt, eq, gt: std_logic;
+
+    signal cur_input_number: std_logic_vector(n - 1 downto 0);
+    signal random_number, cur_random_number: std_logic_vector(n - 1 downto 0);
 begin
+    reached_count_limit <= '1' when count = count_limit else '0';
+
+    random_generator: random_generator_n_bit generic map(
+        n => n,
+        seed_size => prng_seed_size
+    ) port map (
+        clock => clock,
+        seed => prng_seed,
+        result => random_number,
+        done => prng_done
+    );
+
+    random_number_register: register_n_bit generic map(n) port map(
+        clock => clock,
+        data => random_number,
+        result => cur_random_number,
+        enable => enable_global,
+        reset => reset_button
+    );
+
+    input_number_register: register_n_bit generic map(n) port map(
+        clock => clock,
+        data => input_number,
+        result => cur_input_number,
+        enable => enable_global,
+        reset => reset_button
+    );
+
+    comparator: comparator_n_bit generic map(n) port map(
+        left_operand => cur_input_number,
+        right_operand => cur_random_number,
+        lt => lt,
+        eq => eq,
+        gt => gt
+    );
+
+    led_controller_instace: led_controller port map(
+        lt => lt,
+        eq => eq,
+        gt => gt,
+        locked => reached_count_limit,
+        led_correct => led_correct,
+        led_upper => led_upper,
+        led_less => led_less,
+        led_lock => led_lock
+    );
+
+    count_counter: counter_n_bit generic map(n) port map(
+        clock => clock,
+        result => count,
+        enable => enable_global,
+        clear => reset_button
+    );
+
+    binary_3_bit_to_7_segment_instance: binary_3_bit_to_7_segment port map(
+        data => count,
+        result_7_segment => result_7_segment
+    );
+
+    process
+    begin
+        wait until enter_button'event or reset_button'event;
+
+        if reset_button'event then
+            enable_global <= '0';
+        else -- if enter_button'event
+            if reached_count_limit = '1' then
+                wait until falling_edge(clock);
+                enable_global <= '1';
+
+                -- Make sure it visits at least one rising edge.
+                wait until falling_edge(clock);
+                enable_global <= '0';
+            end if;
+        end if;
+    end process;
 end architecture;
