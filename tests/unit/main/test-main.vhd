@@ -49,12 +49,15 @@ architecture structural of test_main is
     constant seed: std_logic_vector(0 to seed_size - 1) := "0011101";
 
     constant enter_button_states: time_array := (
-        923 ns, 940 ns, 1894 ns, 1907 ns, 2691 ns, 2718 ns, 2895 ns, 2922 ns, 3300 ns,
-        3304 ns, 3876 ns, 3901 ns, 4714 ns, 4757 ns, 5245 ns, 5271 ns, 5665 ns, 5705 ns,
-        5783 ns, 5792 ns, 6559 ns, 6567 ns, 7455 ns, 7475 ns, 7955 ns, 7956 ns, 8908 ns,
-        8950 ns, 9738 ns, 9743 ns, 9933 ns, 9945 ns
+        923 ns, 940 ns, 1379 ns, 1382 ns, 1905 ns, 1910 ns, 2147 ns, 2150 ns, 2522 ns,
+        2528 ns, 2883 ns, 2884 ns, 3259 ns, 3269 ns, 3833 ns, 3847 ns, 4211 ns, 4220 ns,
+        4856 ns, 4935 ns, 5700 ns, 5701 ns, 6045 ns, 6048 ns, 6250 ns, 6251 ns, 6511 ns,
+        6522 ns, 6750 ns, 6799 ns
     );
-    constant reset_button_states: time_array := (10000 ns, 10001 ns);
+    constant reset_button_states: time_array := (
+        4498 ns, 4500 ns, 6230 ns, 6239 ns, 6500 ns, 6522 ns, 6690 ns, 6710 ns, 7630 ns,
+        7743 ns
+    );
 
     signal clock, enter_button, reset_button,
         led_correct, led_upper, led_less, led_lock: std_logic := '0';
@@ -74,7 +77,7 @@ begin
         result_7_segment
     );
 
-    clock_generator_instance: clock_generator generic map(500, 10 ns) port map(clock);
+    clock_generator_instance: clock_generator generic map(400, 10 ns) port map(clock);
 
     enter_button_generator_instance: switching_signal_generator
         generic map(enter_button_states) port map(enter_button);
@@ -86,20 +89,13 @@ begin
         x"7" after 734 ns,
         x"c" after 1001 ns,
         x"a" after 1807 ns,
-        x"d" after 1934 ns,
-        x"c" after 2281 ns,
-        x"d" after 2639 ns,
-        x"0" after 3357 ns,
-        x"e" after 4022 ns,
-        x"9" after 4347 ns,
-        x"1" after 4546 ns,
-        x"7" after 5498 ns,
-        x"7" after 5741 ns,
-        x"5" after 6276 ns,
-        x"2" after 7269 ns,
-        x"9" after 7424 ns,
-        x"b" after 7744 ns,
-        x"4" after 8590 ns,
-        x"8" after 9176 ns,
-        x"e" after 9787 ns;
+        x"0" after 1934 ns,
+        x"e" after 2281 ns,
+        x"9" after 2639 ns,
+        x"1" after 3357 ns,
+        x"7" after 4022 ns,
+        x"3" after 4347 ns,
+        x"5" after 5498 ns,
+        x"4" after 5741 ns,
+        x"2" after 7269 ns;
 end architecture;
