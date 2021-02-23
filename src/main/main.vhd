@@ -169,6 +169,9 @@ begin
             enable_prng <= '0';
         else -- if rising_edge(enter_button)
             if reached_count_limit = '0' then
+                -- Make sure the random number is generated, but this should happen rarely
+                wait until prng_done = '1';
+
                 wait until falling_edge(clock);
                 wait for 10 ps;
 
