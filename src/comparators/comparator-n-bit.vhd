@@ -28,7 +28,7 @@ architecture structural of comparator_n_bit is
     signal lt_bits, eq_bits, gt_bits: std_logic_vector(n - 1 downto 0);
 
     -- A vector of '1's
-    signal one_bits: std_logic_vector(n - 1 downto 0);
+    signal one_bits: std_logic_vector(n - 1 downto 0) := (others => '1');
 
     -- Signals used for saving results of smaller blocks of greater-than comparison
     -- operation, consisting of many and and or gates.
@@ -47,14 +47,6 @@ begin
             eq => eq_bits(i),
             gt => gt_bits(i)
         );
-    end generate;
-
-    -- This could be merged with the previous generate loop, but it is here to keep
-    -- things separated and clean. This should not affect performance in any way, as
-    -- generate is a analyze-time (i.e. compile-time) operation.
-    l_initialize_one_bits:
-    for i in 0 to n - 1 generate
-        one_bits(i) <= '1';
     end generate;
 
     eq_tmp <= '1' when eq_bits = one_bits else '0';
