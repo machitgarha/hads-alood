@@ -2,21 +2,16 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.types.time_array;
 
-entity test_flip_flop_d_all is
+entity test_flip_flop_t_positive_edge is
 end entity;
 
-architecture structural of test_flip_flop_d_all is
-    component flip_flop_d_negative_edge is
+architecture structural of test_flip_flop_t_positive_edge is
+    component flip_flop_t_positive_edge is
         port(
-            d, clock: in std_logic;
-            q, q_not: out std_logic
-        );
-    end component;
-
-    component flip_flop_d_positive_edge is
-        port(
-            d, clock: in std_logic;
-            q, q_not: out std_logic
+            t, clock: in std_logic;
+            clear: in std_logic := '0';
+            q: buffer std_logic := '0';
+            q_not: buffer std_logic := '1'
         );
     end component;
 
@@ -41,20 +36,20 @@ architecture structural of test_flip_flop_d_all is
     end component;
 
     constant data_switch_timing: time_array := (
-        9 ns, 18 ns, 26 ns, 34 ns, 51 ns, 53 ns, 62 ns, 72 ns, 73 ns, 74 ns, 79 ns, 89 ns,
-        96 ns
+        4 ns, 16 ns, 34 ns, 49 ns, 49 ns, 52 ns, 66 ns, 83 ns, 83 ns, 86 ns, 89 ns
+    );
+    constant clear_switch_timing: time_array := (
+        18 ns, 21 ns, 26 ns, 27 ns, 39 ns, 40 ns, 71 ns, 72 ns, 87 ns, 89 ns
     );
 
-    signal data, clock, q_falling, q_rising, q_not_falling, q_not_rising: std_logic;
+    signal data, clock, q, q_not, clear: std_logic;
 begin
-    flip_flop_d_negative_edge_instance: flip_flop_d_negative_edge port map(
-        data, clock, q_falling, q_not_falling
-    );
-    flip_flop_d_positive_edge_instance: flip_flop_d_positive_edge port map(
-        data, clock, q_rising, q_not_rising
-    );
+    instance: flip_flop_t_positive_edge port map(data, clock, clear, q, q_not);
 
     clock_generator_instance: clock_generator generic map(10, 5 ns) port map(clock);
+
     data_generator_instance: switching_signal_generator generic map(data_switch_timing)
         port map(data);
+    clear_generator_instance: switching_signal_generator generic map(clear_switch_timing)
+        port map(clear);
 end architecture;
