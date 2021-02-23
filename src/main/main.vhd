@@ -88,12 +88,12 @@ architecture structural of main is
         );
     end component;
 
-    constant count_limit: std_logic_vector(2 downto 0) := "111";
+    constant count_limit: std_logic_vector(2 downto 0) := o"7";
 
-    signal enable_global: std_logic := '0';
+    signal enable_global, enable_prng: std_logic := '0';
 
     signal reached_count_limit: std_logic := '0';
-    signal count: std_logic_vector(2 downto 0) := "000";
+    signal count: std_logic_vector(2 downto 0) := o"0";
 
     signal prng_done: std_logic;
     signal lt, eq, gt: std_logic;
@@ -117,7 +117,7 @@ begin
         clock => clock,
         data => random_number,
         result => cur_random_number,
-        enable => enable_global,
+        enable => enable_prng,
         reset => reset_button
     );
 
@@ -148,7 +148,7 @@ begin
         led_lock => led_lock
     );
 
-    count_counter: counter_n_bit generic map(n) port map(
+    count_counter: counter_n_bit generic map(3) port map(
         clock => clock,
         result => count,
         enable => enable_global,
@@ -162,18 +162,27 @@ begin
 
     process
     begin
-        wait until enter_button'event or reset_button'event;
+        wait until rising_edge(enter_button) or rising_edge(reset_button);
 
-        if reset_button'event then
+        if rising_edge(reset_button) then
             enable_global <= '0';
-        else -- if enter_button'event
-            if reached_count_limit = '1' then
+            enable_prng <= '0';
+        else -- if rising_edge(enter_button)
+            if reached_count_limit = '0' then
                 wait until falling_edge(clock);
+                wait for 10 ps;
+
                 enable_global <= '1';
 
-                -- Make sure it visits at least one rising edge.
+                if count = o"0" then
+                    enable_prng <= '1';
+                end if;
+
+                -- Make sure the values visit at least one rising edge.
                 wait until falling_edge(clock);
+                wait for 10 ps;
                 enable_global <= '0';
+                enable_prng <= '0';
             end if;
         end if;
     end process;
