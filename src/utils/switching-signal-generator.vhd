@@ -8,7 +8,7 @@ entity switching_signal_generator is
         constant switch_timing: time_array
     );
     port(
-        result: buffer std_logic;
+        result: buffer std_logic := '0';
         initial_value: in std_logic := '0'
     );
 end entity;
