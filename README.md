@@ -16,7 +16,7 @@ You may have a hard time understanding the implementation, as it is somehow comp
 
 ### Automation Scripts
 
-For making the process of entity creation and testing in a standard way, there are two scripts inside `scripts/` directory. Both have usage guides (via `help` command). And, they are written in PHP, and require you to have both GHDL and GtkWave installed on your system.
+For making the process of entity creation and testing in a standard way quicker and easier, there are two scripts inside `scripts/` directory. Both have usage guides (via `help` command). And, they are written in PHP, and require you to have both GHDL and GtkWave installed on your system.
 
 ## Building and Testing (I.e. Simulation)
 
